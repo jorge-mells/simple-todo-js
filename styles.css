@@ -1,0 +1,98 @@
+/* desktop */
+
+/* text */
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+html {
+    font-family: Rubik, "Roboto Mono", Poppins, sans-serif;
+    font-size: 15px;
+}
+
+h1 {
+    font-size: 3rem;
+    text-align: center;
+}
+
+h2 {
+    font-weight: 500;
+    font-size: 2rem;
+}
+
+/* colors and background */
+h1 {
+    color: white;
+}
+
+body {
+    background-color: black;
+}
+
+#todobox {
+    background-color: white;
+}
+
+#addTodoBtn, .deleteTodoBtn {
+    color: white;
+    background-color: blue;
+    border-color: blue;
+}
+
+/* positioning and box styles */
+h2 {
+    padding: 0;
+    margin: 0;
+    margin-bottom: calc(20rem/15);
+}
+
+#todobox {
+    width: 50%;
+    margin: auto;
+    border-radius: calc(8rem/15);
+    padding: calc(25rem/15);
+}
+
+#addTodo {
+    border-radius: calc(5rem/15);
+    height: calc(30rem/15);
+    width: 80%;
+    border-style: solid;
+    border-color: black;
+}
+
+#addTodoBtn, .deleteTodoBtn {
+    border-radius: calc(5rem/15);
+    height: calc(30rem/15);
+    border-style: solid;
+}
+
+.deleteTodoBtn {
+    background-color: red;
+    height: calc(25rem/15);
+    border-color: red;
+    margin-left: calc(15rem/15);
+}
+
+#todoList {
+    margin-top: calc(10rem/15);
+}
+
+.todoItem {
+    margin-top: calc(5rem/15);
+    display: flex;
+    align-items: center;
+}
+
+input[type="checkbox"] {
+    width: calc(25rem/15);
+    height: calc(25rem/15);
+    margin-right: calc(10rem/15);
+    accent-color: blue;
+}
+
+input[type="checkbox"]:checked ~ label {
+    text-decoration: line-through;
+}
+
+label {
+    font-size: calc(16rem/15);
+}
