@@ -31,7 +31,7 @@ body {
     background-color: white;
 }
 
-#addTodoBtn, .deleteTodoBtn {
+#addTodoBtn, .deleteTodoBtn, #searchBtn {
     color: white;
     background-color: blue;
     border-color: blue;
@@ -51,7 +51,7 @@ h2 {
     padding: calc(25rem/15);
 }
 
-#addTodo {
+#addTodo, #search {
     border-radius: calc(5rem/15);
     height: calc(30rem/15);
     width: 80%;
@@ -59,7 +59,11 @@ h2 {
     border-color: black;
 }
 
-#addTodoBtn, .deleteTodoBtn {
+#addTodo {
+    margin-top: 10px;
+}
+
+#addTodoBtn, .deleteTodoBtn, #searchBtn {
     border-radius: calc(5rem/15);
     height: calc(30rem/15);
     border-style: solid;

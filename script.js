@@ -1,7 +1,6 @@
 /*
- * Add: ability to edit todos
- * Add: show todos, hide todos, search
- * Add: clear todos
+ * search todos: use regexp then allow users to edit like
+ * in delete system
  */
 let todoId = 0;
 let todos = [];
