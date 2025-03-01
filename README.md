@@ -93,9 +93,9 @@ Here's a simple todo app to practice my javascript. It was created with pure HTM
 
 ### Built With
 
-* [![HTML5][HTML5]]
-* [![CSS3][CSS3]]
-* [![Javascript][Javascript]]
+* ![HTML5][HTML5]
+* ![CSS3][CSS3]
+* ![Javascript][Javascript]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -110,10 +110,11 @@ Simply clone the repo to get started.
 
 You only need a web browser to get this project up and running. You would also need to be able to spin up a server using local host. For an example of a web server:
 * install python3 
-* start the server
+* start the server in the project directory
   ```sh
     python3 -m http.server
   ```
+* open `localhost:8000` to view the app 
 
 ### Installation
 
@@ -122,7 +123,7 @@ You only need a web browser to get this project up and running. You would also n
    git clone https://github.com/jorge-mells/simple-todo-js.git
    ```
 2. Change git remote url to avoid accidental pushes to base project
-  ```sh
+   ```sh
    git remote set-url origin jorge-mells/simple-todo-js
    git remote -v # confirm the changes
    ```
