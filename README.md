@@ -174,7 +174,7 @@ Don't forget to give the project a star! Thanks again!
 ### Top contributors:
 
 <a href="https://github.com/jorge-mells/simple-todo-js/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=jorge-mells/simple-todo-js" alt="contrib.rocks image" />
+  <img src="images/logo" />
 </a>
 
 
@@ -219,7 +219,7 @@ Project Link: [https://github.com/jorge-mells/simple-todo-js](https://github.com
 [stars-url]: https://github.com/jorge-mells/simple-todo-js/stargazers
 [issues-shield]: https://img.shields.io/github/issues/jorge-mells/simple-todo-js.svg?style=for-the-badge
 [issues-url]: https://github.com/jorge-mells/simple-todo-js/issues
-[license-shield]: https://img.shields.io/github/license/jorge-mells/simple-todo-js.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/jorge-mells/simple-todo-js?style=for-the-badge
 [license-url]: https://github.com/jorge-mells/simple-todo-js/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/george-mills-99a9481b8
