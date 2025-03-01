@@ -174,7 +174,8 @@ Don't forget to give the project a star! Thanks again!
 ### Top contributors:
 
 <a href="https://github.com/jorge-mells/simple-todo-js/graphs/contributors">
-  <img src="images/logo.png" />
+  <!-- fix this really stupid fix (replace simple-todo-cli with simple-todo-js) -->
+  <img src="https://contrib.rocks/image?repo=jorge-mells/simple-todo-cli" />
 </a>
 
 
