@@ -1,3 +1,4 @@
+// get the necessary components for the page
 let todos = JSON.parse(localStorage.getItem("todos")) || [];
 let currentEdit = -1;
 let search = document.querySelector("#search-task");
@@ -86,6 +87,7 @@ function findFilterBtn() {
     if (isActiveFilter) return "active";
 }
 
+// create new components to be added to the page
 let addTodoBanner = null;
 let foundBanner = null;
 let noResultsBanner = null;
@@ -116,6 +118,10 @@ function createFoundBanner(numberOfResults, currentSearch) {
     foundBanner.textContent = `Found ${numberOfResults} for "${currentSearch}"`;
 }
 
+/*
+ * create a component that displays that no results have been found
+ * @param {search} currentSearch - The text currently in the search bar
+ */
 function createNoResultsBanner(currentSearch) {
     // banner to display for no results
     noResultsBanner = document.createElement("li");
@@ -123,6 +129,12 @@ function createNoResultsBanner(currentSearch) {
     noResultsBanner.textContent = `No results found for "${currentSearch}"`;
 }
 
+/*
+ * create a component that displays how many total, active and completed todos there are
+ * @param {number} total - the total number of todos
+ * @param {number} active - the number of incomplete todos
+ * @param {number} completed - the number of completed todos
+ */
 function createStatsBanner(total, active, completed) {
     // banner to display statistics
     statsBanner = document.createElement("p");
@@ -130,17 +142,29 @@ function createStatsBanner(total, active, completed) {
     statsBanner.textContent = `${total} total, ${active} active, ${completed} completed`;
 }
 
+/*
+ * a callback to rerender todos when a todo is completed
+ * @param {object} todo - the todo which has just been completed
+ */
 function checkedTodoCallback(todo) {
     todo.completed = !todo.completed;
     localStorage.setItem("todos", JSON.stringify(todos));
     render();
 }
 
+/*
+ * a callback to rerender todos when a todo is currently being edited
+ * @param {number} index - the index of the todo in the todos array being edited
+ */
 function editTodoCallback(index) {
     currentEdit = index;
     render();
 }
 
+/*
+ * a callback to rerender todos when a todo has just been deleted
+ * @param {number} index - the index of the todo in the todos array being edited
+ */
 function delBtnCallback(index) {
     todos.splice(index, 1);
     // fix id issues
@@ -151,6 +175,11 @@ function delBtnCallback(index) {
     render();
 }
 
+/*
+ * a callback to rerender todos after a completed edit
+ * @param {object} todo - the todo which has just been completed
+ * @param {string} newText - the text that was just entered to replace the old todo
+ */
 function saveBtnCallback(todo, newText) {
     todo.text = newText;
     localStorage.setItem("todos", JSON.stringify(todos));
@@ -158,11 +187,19 @@ function saveBtnCallback(todo, newText) {
     render();
 }
 
+/*
+ * a callback to rerender todos after a canceled edit
+ */
 function cancelBtnCallback() {
     currentEdit = -1;
     render();
 }
 
+/*
+ * create a new todo item component
+ * @param {number} index - the id (index in todos array) of the todo whose component is to be created
+ * @returns {Element} the new component that has been created  
+ */
 function createTodoItem(index) {
     let todo = todos[index];
     let { text, completed } = todo;
@@ -326,6 +363,9 @@ function render() {
     }
 }
 
+/*
+ * a callback to rerender todos after a todo has been created
+ */
 function addTodoCallback() {
     if (!addTodo.value) return;
     todos.push({ id: todos.length, text: addTodo.value, completed: false });
@@ -334,6 +374,10 @@ function addTodoCallback() {
     render();
 }
 
+/*
+ * a callback to rerender todos when a new filter button has been selected
+ * @param {Event} event - the event object passed by the clicked button
+ */
 function filterChangeCallback(event) {
     let currentFilter = findFilterBtn();
     switch (currentFilter) {
@@ -351,11 +395,17 @@ function filterChangeCallback(event) {
     render();
 }
 
+/*
+ * a callback to remove content when the cancel button is clicked
+ */
 function clearImgCallback() { 
     search.value = "";
     render(); 
 }
 
+/*
+ * create all other relevant event listeners
+ */
 function createListeners() {
     search.addEventListener("input", render);
     clearImg.addEventListener("click", clearImgCallback);
