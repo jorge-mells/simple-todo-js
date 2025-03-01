@@ -174,7 +174,7 @@ Don't forget to give the project a star! Thanks again!
 ### Top contributors:
 
 <a href="https://github.com/jorge-mells/simple-todo-js/graphs/contributors">
-  <img src="images/logo" />
+  <img src="images/logo.png" />
 </a>
 
 
