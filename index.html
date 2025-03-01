@@ -1,31 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Simple Todo</title>
+        <title>Todo App</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="styles.css" rel="stylesheet"/>
     </head>
     <body>
-        <h1>Simple Todo</h1>
         <main>
-            <div id="todobox">
-                <h2>Things to do</h2>
-                <div>
-                    <input type="search" id="search" name="search" placeholder="Search (Doesn't work)" />
-                    <button type="button" id="searchBtn">Search</button>
-                </div>
-                <div id="todoList">
-                    <!--<div class="todoItem">
-                        <input type="checkbox" id="todo1" name="scales" checked />
-                        <label for="todo2">hello everyone</label>
-                        <button type="button" class="deleteTodoBtn">Delete Todo</button>
-                    </div>-->
-                </div>
-                <div>
-                    <input type="text" id="addTodo" name="addTodo" placeholder="Add new todo" />
-                    <button type="button" id="addTodoBtn">Add Todo</button>
-                </div>
+            <h1>Todo App</h1>
+            <div id="add-container">
+                <input id="add-task" type="text" placeholder="Add a new task..." />
+                <button id="add-task-btn" class="generic-btn">Add</button>
             </div>
+            <div id="search-container">
+                <span id="search-img">🔍</span>
+                <input id="search-task" type="text" placeholder="Search todos..." />
+                <button id="clear-img">✕</button>
+            </div>
+            <div id="btn-container">
+                <button id="all-btn" class="generic-btn selected">All</button>
+                <button id="active-btn" class="generic-btn">Active</button>
+                <button id="completed-btn" class="generic-btn">Completed</button>
+            </div>
+            <ul id="task-container">
+                <!-- todos will be inserted here -->
+            </ul>
         </main>
     </body>
     <script src="script.js"></script>

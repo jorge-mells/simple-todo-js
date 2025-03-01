@@ -1,115 +1,373 @@
+let todos = JSON.parse(localStorage.getItem("todos")) || [];
+let currentEdit = -1;
+let search = document.querySelector("#search-task");
+let todoContainer = document.querySelector("#task-container");
+let addTodo = document.querySelector("#add-task");
+let addTodoBtn = document.querySelector("#add-task-btn");
+let allBtn = document.querySelector("#all-btn");
+let completedBtn = document.querySelector("#completed-btn");
+let activeBtn = document.querySelector("#active-btn");
+let clearImg = document.querySelector("#clear-img");
+
 /*
- * search todos: use regexp then allow users to edit like
- * in delete system
+ * get which regions of the text should be highlighted or not
+ * @param {object} matches - the iterator returned by matchAll
+ * @param {string} searchedText - the text you intend to reconstruct
+ * @returns {Array<Array<string, boolean>>} Each text section and whether they should be highlighted or not
  */
-let todoId = 0;
-let todos = [];
-let checked = [];
-let currentDelBtn = null;
-let todoList = document.querySelector("#todoList");
-let addTodoBtn = document.querySelector("#addTodoBtn");
-let addTodo = document.querySelector("#addTodo");
-
-function showTodos() {
-    let todoList = document.querySelector("#todoList");
-    if (!todoList) {
-        let todoBox = document.querySelector("#todoBox");
-        todoBox.append(window.todoList);
-    }
-}
-
-function hideTodos() {
-    let todoList = document.querySelector("#todoList");
-    if (todoList) {
-        todoList.remove();
-    }
-}
-
-function createDeleteBtn() {
-    let deleteTodoBtn = document.createElement("button");
-    deleteTodoBtn.type = "button";
-    deleteTodoBtn.className = "deleteTodoBtn";
-    deleteTodoBtn.textContent = "Delete Todo";
-    return deleteTodoBtn;
-}
-
-function createTodoItem(id, content) {
-    let todoItem = document.createElement("div");
-    todoItem.className = "todoItem";
-    todoItem.innerHTML = `
-        <input type="checkbox" id="todoItem${id}" name="scales" />
-        <label for="todoItem${id}">${content}</label>
-`;
-    return todoItem;
-}
-
-function addDelBtnCallback(deleteTodoBtn, newTodo, text) {
-    if (currentDelBtn) {
-        currentDelBtn.remove();
-    }
-    currentDelBtn = deleteTodoBtn;
-    newTodo.append(deleteTodoBtn);
-    deleteTodoBtn.addEventListener("click", () => deleteTodoCallback(newTodo, text));
-}
-
-function deleteTodoCallback(newTodo, text) {
-    todos = todos.filter(todo => todo !== text);
-    newTodo.remove();
-    localStorage.setItem('todos', JSON.stringify(todos));
-}
-
-function removeDelBtnCallback() {
-    setTimeout(() => {
-        if (currentDelBtn) {
-            currentDelBtn.remove();
-            currentDelBtn = null;
-        }
-    }, 5000);
-}
-/**
- * Record changes in the state of a todo item
- * @param {object} event - Must contain the input element which changed
- */
-function checkChangeCallback(e) {
-    let inputElement = e.target;
-    let index = inputElement.id.at(-1);
-    index = parseInt(index);
-    checked[index] = !checked[index];
-    localStorage.setItem('checked', JSON.stringify(checked));
-}
-
-function addTodoItemCallback(e, text) {
-    text = text.trim();
-    if (e.key === "Enter" && text !== "" && !todos.includes(text)) {
-        todos.push(text);
-        let newTodo = createTodoItem(todoId++, text);
-        let todoText = newTodo.querySelector("label");
-        let deleteTodoBtn = createDeleteBtn();
-        todoText.addEventListener("mouseenter", () => addDelBtnCallback(deleteTodoBtn, newTodo, text));
-        todoText.addEventListener("mouseout", removeDelBtnCallback);
-        todoList.append(newTodo);
-        addTodo.value = "";
-        localStorage.setItem('todos', JSON.stringify(todos));
-        checked.push(e?.checkState ?? false);
-        let inputEle = newTodo.querySelector("input");
-        inputEle.checked = e?.checkState ?? false;
-        inputEle.addEventListener("change", checkChangeCallback);
-        localStorage.setItem('checked', JSON.stringify(checked));
-    }
-}
-
-(function initialise() {
-    if (localStorage.getItem('todos')) {
-        let oldTodos = JSON.parse(localStorage.getItem('todos'));
-        let oldCheckState = JSON.parse(localStorage.getItem('checked'));
-        for ([index, todo] of oldTodos.entries()) {
-            addTodoItemCallback({ key: "Enter", checkState: oldCheckState?.[index] }, todo);
+function reconstructSearchedText(matches, searchedText) {
+    let reconstructedArr = [];
+    // mark start of searchedText
+    let i = 0;
+    for (match of matches) {
+        for (indexArr of match.indices) {
+            let start = indexArr[0], end = indexArr[1];
+            // get the part you shouldn't highlight in front of the indexArr
+            if (i < start) {
+                reconstructedArr.push([searchedText.slice(i, start), false]);
+                i = start;
+            }
+            // get the part you should highlight
+            if (start === i) {
+                reconstructedArr.push([searchedText.slice(start, end), true]);
+                i = end;
+                continue;
+            }
+            // ensure there are no errors
+            if (i > start) {
+                console.error("the position of the pointer should be at most at the start of the index array");
+            }
         }
     }
-    document.addEventListener("beforeunload", () => {
-        localStorage.setItem('todos', JSON.stringify(todos));
-        localStorage.setItem('checked', JSON.stringify(checked));
+    // ensure that all the text has been captured and add any leftover
+    if (i !== searchedText.length) {
+        reconstructedArr.push([searchedText.slice(i, searchedText.length + 1), false]);
+    }
+    return reconstructedArr;
+}
+
+/*
+ * modify each todo to account for searches
+ * @param {string} currentSearch - the term currently being searched
+ * @param {Array<object>} activeTodos - the todos being searched
+ * @returns {Array<object>} the modified todos and found results
+ */
+function findSearches(currentSearch, activeTodos) {
+    if (!currentSearch) return activeTodos;
+    let length = activeTodos.length
+    let staticArr = Array.from(activeTodos);
+    for (let index = length - 1; index >= 0; index--) {
+        let todo = staticArr[index];
+        // ignore case and ensure an indexArray is returned for each match
+        // only perform literal matches
+        currentSearch = currentSearch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        let searchRegex = new RegExp(currentSearch, "gdi");
+        let matches = todo.text.matchAll(searchRegex);
+        let resultArr = reconstructSearchedText(matches, todo.text);
+        if (resultArr.length === 1) {
+            activeTodos.splice(index, 1);
+            continue;
+        }
+        todo.searchedText = resultArr;
+    }
+    return activeTodos;
+}
+
+/*
+ * find which filter button is currently active
+ * @returns {string} "all", or "completed", or "active"
+ */
+function findFilterBtn() {
+    let isAllFilter = allBtn.classList.contains("selected");
+    if (isAllFilter) return "all";
+    let isCompletedFilter = completedBtn.classList.contains("selected");
+    if (isCompletedFilter) return "completed";
+    let isActiveFilter = activeBtn.classList.contains("selected");
+    if (isActiveFilter) return "active";
+}
+
+let addTodoBanner = null;
+let foundBanner = null;
+let noResultsBanner = null;
+let statsBanner = null;
+let noTaskMatch = null;
+/*
+ * create elements which only need to be created once
+ */
+function createStaticElements() {
+    // banner to display for no todos
+    addTodoBanner = document.createElement("li");
+    addTodoBanner.classList.add("filter-none", "stats");
+    addTodoBanner.textContent = "Add your first todo item";
+    noTaskMatch = document.createElement("li");
+    noTaskMatch.classList.add("filter-none", "stats");
+    noTaskMatch.textContent = "No tasks match the current filter";
+}
+
+/*
+ * create a component that shows how many items have been found
+ * @param {number} numberOfResults - how many items have been found
+ * @param {text} currentSearch - the currently searched term
+ */
+function createFoundBanner(numberOfResults, currentSearch) {
+    // banner to display for searches
+    foundBanner = document.createElement("li");
+    foundBanner.classList.add("filter-text", "stats");
+    foundBanner.textContent = `Found ${numberOfResults} for "${currentSearch}"`;
+}
+
+function createNoResultsBanner(currentSearch) {
+    // banner to display for no results
+    noResultsBanner = document.createElement("li");
+    noResultsBanner.classList.add("filter-none", "stats");
+    noResultsBanner.textContent = `No results found for "${currentSearch}"`;
+}
+
+function createStatsBanner(total, active, completed) {
+    // banner to display statistics
+    statsBanner = document.createElement("p");
+    statsBanner.classList.add("stats");
+    statsBanner.textContent = `${total} total, ${active} active, ${completed} completed`;
+}
+
+function checkedTodoCallback(todo) {
+    todo.completed = !todo.completed;
+    localStorage.setItem("todos", JSON.stringify(todos));
+    render();
+}
+
+function editTodoCallback(index) {
+    currentEdit = index;
+    render();
+}
+
+function delBtnCallback(index) {
+    todos.splice(index, 1);
+    // fix id issues
+    for (let i = 0; i < todos.length; i++) {
+        todos[i].id = i;
+    }
+    localStorage.setItem("todos", JSON.stringify(todos));
+    render();
+}
+
+function saveBtnCallback(todo, newText) {
+    todo.text = newText;
+    localStorage.setItem("todos", JSON.stringify(todos));
+    currentEdit = -1;
+    render();
+}
+
+function cancelBtnCallback() {
+    currentEdit = -1;
+    render();
+}
+
+function createTodoItem(index) {
+    let todo = todos[index];
+    let { text, completed } = todo;
+    let newItem = document.createElement("li");
+    newItem.classList.add("task-item");
+    let input = document.createElement("input");
+    input.type = "checkbox";
+    input.checked = completed || false;
+    if (completed) {
+        newItem.classList.add("completed");
+    }
+    input.addEventListener("change", () => checkedTodoCallback(todo));
+    newItem.append(input);
+    if (index !== currentEdit) {
+        let label = document.createElement("label");
+        label.classList.add("todo-text");
+        label.textContent = text;
+        if (completed) {
+            label.classList.add("completed");
+        }
+        newItem.append(label);
+        let editBtn = document.createElement("button");
+        editBtn.classList.add("edit-btn");
+        editBtn.textContent = "Edit";
+        editBtn.addEventListener("click", () => editTodoCallback(index)); 
+        newItem.append(editBtn);
+        let delBtn = document.createElement("button");
+        delBtn.classList.add("del-btn");
+        delBtn.textContent = "Delete";
+        delBtn.addEventListener("click", () => delBtnCallback(index));
+        newItem.append(delBtn);
+        return newItem;
+    } else {
+        let input = document.createElement("input");
+        input.type = "text";
+        input.classList.add("edit-task", "todo-text");
+        input.value = text;
+        input.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") saveBtnCallback(todo, input.value);
+        });
+        newItem.append(input);
+        let saveBtn = document.createElement("button");
+        saveBtn.classList.add("save-btn");
+        saveBtn.textContent = "Save";
+        saveBtn.addEventListener("click", () => saveBtnCallback(todo, input.value));
+        newItem.append(saveBtn);
+        let cancelBtn = document.createElement("button");
+        cancelBtn.classList.add("cancel-btn");
+        cancelBtn.textContent = "Cancel";
+        cancelBtn.addEventListener("click", () => cancelBtnCallback(index));
+        newItem.append(cancelBtn);
+        return newItem;
+    }
+}
+
+/*
+ * render items onto the screen
+ */
+function render() {
+    // remove content that has remained from a previous render
+    for (child of Array.from(todoContainer.children)) {
+        child.remove();
+    }
+    todoContainer.nextElementSibling?.remove();
+    // get todos if available
+    let totalTodos = todos.length;
+    let activeTodos = JSON.parse(JSON.stringify(todos));
+    // show the x button
+    if (!search.value) {
+        clearImg.classList.remove("show");
+    } else {
+        clearImg.classList.add("show");
+    }
+    // filter todos according to search
+    // only display this text if no search is performed and there are no todos
+    if (!search.value && totalTodos === 0) {
+        todoContainer.append(addTodoBanner);
+        createStatsBanner(0, 0, 0);
+        todoContainer.after(statsBanner);
+        return;
+    }
+    activeTodos = findSearches(search.value, activeTodos);
+    let numberOfResults = activeTodos.length;
+    // filter todos according to the filter buttons
+    let activeFilter = findFilterBtn();
+    let completed = todos.filter((todo) => todo.completed).length;
+    if (activeFilter === "completed") {
+        activeTodos = activeTodos.filter((todo) => todo.completed);
+    }
+    if (activeFilter === "active") {
+        let all = todos.length;
+        activeTodos = activeTodos.filter((todo) => !todo.completed);
+        completed = all - todos.filter((todo) => !todo.completed).length;
+    }
+    // render stats banner already
+    createStatsBanner(totalTodos, totalTodos - completed, completed);
+    todoContainer.after(statsBanner);
+    // show that nothing can be found if there are 0 finds for a search
+    if (search.value && numberOfResults === 0) {
+        createFoundBanner(0, search.value);
+        todoContainer.append(foundBanner);
+        createNoResultsBanner(search.value);
+        todoContainer.append(noResultsBanner);
+        return;
+    }
+    // just show only based on filter if something searched but the filtered result is empty
+    let activeCompleted = activeTodos.filter((todo) => todo.completed).length;
+    if (activeFilter === "completed" && activeCompleted === 0) {
+        if (search.value) {
+            createFoundBanner(numberOfResults, search.value);
+            todoContainer.append(foundBanner);
+            todoContainer.append(noTaskMatch);
+            return;
+        } else {
+            todoContainer.append(noTaskMatch);
+            return;
+        }
+    }
+    let numberActive = totalTodos - completed;
+    let currentActive = numberOfResults - activeCompleted;
+    if (activeFilter === "active" && (currentActive === 0 || activeTodos.length == 0)) {
+        if (search.value) {
+            createFoundBanner(numberOfResults, search.value);
+            todoContainer.append(foundBanner);
+            todoContainer.append(noTaskMatch);
+            return;
+        } else {
+            todoContainer.append(noTaskMatch);
+            return;
+        }
+    }
+    // finally render the todos
+    if (!search.value) {
+        for (activeTodo of activeTodos) {
+            let todo = createTodoItem(activeTodo.id);
+            todoContainer.append(todo);
+        }
+    } else {
+        createFoundBanner(numberOfResults, search.value);
+        todoContainer.append(foundBanner);
+        for (activeTodo of activeTodos) {
+            let todo = createTodoItem(activeTodo.id);
+            let label = todo.querySelector("label");
+            if (!label) {
+                todoContainer.append(todo);
+                continue;
+            }
+            label.textContent = "";
+            for ([substring, highlight] of activeTodo.searchedText) {
+                if (highlight) {
+                    let span = document.createElement("span");
+                    span.classList.add("highlighted");
+                    span.textContent = substring;
+                    label.append(span);
+                } else {
+                    label.append(substring);
+                }
+            }
+            todoContainer.append(todo);
+        }
+    }
+}
+
+function addTodoCallback() {
+    if (!addTodo.value) return;
+    todos.push({ id: todos.length, text: addTodo.value, completed: false });
+    localStorage.setItem("todos", JSON.stringify(todos));
+    addTodo.value = "";
+    render();
+}
+
+function filterChangeCallback(event) {
+    let currentFilter = findFilterBtn();
+    switch (currentFilter) {
+        case "all":
+            allBtn.classList.remove("selected");
+            break;
+        case "completed":
+            completedBtn.classList.remove("selected");
+            break;
+        case "active":
+            activeBtn.classList.remove("selected");
+            break;
+    }
+    event.target.classList.add("selected");
+    render();
+}
+
+function clearImgCallback() { 
+    search.value = "";
+    render(); 
+}
+
+function createListeners() {
+    search.addEventListener("input", render);
+    clearImg.addEventListener("click", clearImgCallback);
+    addTodo.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") addTodoCallback();
     });
-    addTodoBtn.addEventListener("click", () => addTodoItemCallback({ key: "Enter" }, addTodo.value));
-    addTodo.addEventListener("keydown", (e) => addTodoItemCallback(e, addTodo.value));
-})();
+    addTodoBtn.addEventListener("click", addTodoCallback);
+    allBtn.addEventListener("click", filterChangeCallback);
+    completedBtn.addEventListener("click", filterChangeCallback);
+    activeBtn.addEventListener("click", filterChangeCallback);
+}
+
+createListeners();
+createStaticElements();
+render();

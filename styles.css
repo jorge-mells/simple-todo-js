@@ -1,102 +1,252 @@
-/* desktop */
-
-/* text */
-@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
-
-html {
-    font-family: Rubik, "Roboto Mono", Poppins, sans-serif;
-    font-size: 15px;
-}
-
-h1 {
-    font-size: 3rem;
-    text-align: center;
-}
-
-h2 {
-    font-weight: 500;
-    font-size: 2rem;
-}
-
-/* colors and background */
-h1 {
-    color: white;
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
 body {
-    background-color: black;
+    font-size: 16px;
+    background-color: #f5f5f5;
+    color: #333;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-#todobox {
+main {
     background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+    padding: 10px 20px;
 }
 
-#addTodoBtn, .deleteTodoBtn, #searchBtn {
-    color: white;
-    background-color: blue;
-    border-color: blue;
+h1 {
+    font-size: 32px;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-/* positioning and box styles */
-h2 {
-    padding: 0;
-    margin: 0;
-    margin-bottom: calc(20rem/15);
-}
-
-#todobox {
-    width: 50%;
-    margin: auto;
-    border-radius: calc(8rem/15);
-    padding: calc(25rem/15);
-}
-
-#addTodo, #search {
-    border-radius: calc(5rem/15);
-    height: calc(30rem/15);
-    width: 80%;
-    border-style: solid;
-    border-color: black;
-}
-
-#addTodo {
-    margin-top: 10px;
-}
-
-#addTodoBtn, .deleteTodoBtn, #searchBtn {
-    border-radius: calc(5rem/15);
-    height: calc(30rem/15);
-    border-style: solid;
-}
-
-.deleteTodoBtn {
-    background-color: red;
-    height: calc(25rem/15);
-    border-color: red;
-    margin-left: calc(15rem/15);
-}
-
-#todoList {
-    margin-top: calc(10rem/15);
-}
-
-.todoItem {
-    margin-top: calc(5rem/15);
+#add-container {
     display: flex;
+    margin-bottom: 20px;
+}
+
+#add-task {
+    flex: 1;
+    padding: 10px;
+    border-radius: 4px 0 0 4px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+#add-task:focus, #search-task:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+.generic-btn {
+    background-color: #ecf0f1;
+    color: black;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+}
+
+#add-task-btn {
+    background-color: #3498db;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+#add-task-btn:hover {
+    background-color: #2980b9;
+}
+
+#search-container {
+    display: flex;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+#search-task {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding-left: 36px;
+}
+
+#search-img {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: pointer;
+}
+
+#clear-img {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: none;
+    display: none;
+    cursor: pointer;
+}
+
+#clear-img:hover {
+    color: #e74c3c;
+}
+
+#clear-img.show {
+    display: block;
+}
+
+#btn-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#all-btn, #completed-btn, #active-btn {
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#all-btn:hover, #completed-btn:hover, #active-btn:hover {
+    color: white;
+    background-color: #3498db;
+}
+
+
+.selected {
+    color: white;
+    background-color: #3498db;
+}
+
+ul#task-container {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+li.task-item {
+    display: flex;
+    gap: 10px;
     align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border: none;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: all 0.3s;
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 input[type="checkbox"] {
-    width: calc(25rem/15);
-    height: calc(25rem/15);
-    margin-right: calc(10rem/15);
-    accent-color: blue;
+    height: 18px;
+    width: 18px;
+    margin-right: 15px;
+    cursor: pointer;
 }
 
-input[type="checkbox"]:checked ~ label {
+.todo-text {
+    flex: 1;
+    word-break: break-word;
+}
+
+.edit-btn, .del-btn, .cancel-btn, .save-btn {
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    padding: 5px 10px;
+    transition: background 0.3s;
+}
+
+.edit-btn {
+    background-color: #f39c12;
+}
+
+.edit-btn:hover {
+    background-color: #e67e22;
+}
+
+.del-btn {
+    background-color: #e74c3c;
+}
+
+.del-btn:hover {
+    background-color: #c0392b;
+}
+
+.save-btn {
+    background: #2ecc71;
+}
+
+.save-btn:hover {
+    background: #27ae60;
+}
+
+.cancel-btn {
+    background: #95a5a6;
+}
+
+.cancel-btn:hover {
+    background: #7f8c8d;
+}
+
+li.completed {
+    background-color: #e8f5e9;
+}
+
+li.completed > label.todo-text {
     text-decoration: line-through;
+    color: #7f8c8d;
 }
 
-label {
-    font-size: calc(16rem/15);
+.edit-task {
+    padding: 5px 8px;
+    border: 1px solid #3498db;
+    color: black;
+    background-color: white;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.edit-task:focus {
+    border: 2px solid black;
+}
+
+.stats {
+    color: #7f8c8d;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.filter-text {
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.filter-none {
+    margin: 30px;
+    font-style: italic;
+}
+
+.highlighted {
+    background-color: #ffffcc;
 }
