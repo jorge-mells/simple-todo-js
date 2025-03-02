@@ -83,7 +83,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://jorge-mells.github.io/)
+[![Product Name Screen Shot][product-screenshot]](https://jorge-mells.github.io/simple-todo-js/)
 
 Here's a simple todo app to practice my javascript. It was created with pure HTML, CSS, and Javascript. As it can clearly be seen, the UI is inspired by AI (specifically Claude), but two-thirds of the coding effort was done by me (CSS is too hard).
 
@@ -137,7 +137,7 @@ You only need a web browser to get this project up and running. You would also n
 
 Using the app should be pretty intuitive.
 
-_For more examples, please refer to the [Documentation](https://jorge-mells.github.io/)_
+_For more examples, please refer to the [Documentation](https://jorge-mells.github.io/simple-todo-js/)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
