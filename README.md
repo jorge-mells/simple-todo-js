@@ -192,7 +192,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@jorgemelloes](https://twitter.com/jorgemelloes) - jorgemelloes@gmail.com
+George Mills - jorgemelloes@gmail.com
 
 Project Link: [https://github.com/jorge-mells/simple-todo-js](https://github.com/jorge-mells/simple-todo-js)
 
